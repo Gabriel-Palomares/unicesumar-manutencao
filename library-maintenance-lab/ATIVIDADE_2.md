@@ -1,125 +1,36 @@
-# Atividade 2 – Manutenção Corretiva e Evolutiva
+# Atividade 2 – Relatório de Manutenção Corretiva e Evolutiva
 
-Esta atividade foca em manutenção corretiva (correção de falhas) e manutenção evolutiva (adição de funcionalidade), preservando o funcionamento atual do sistema legado.
+## 1. Manutenção Corretiva (Bugs Corrigidos)
 
-## Objetivos
+Foram identificados e resolvidos os seguintes bugs reais no código legado:
 
-1. Identificar e corrigir pelo menos 3 bugs reais no projeto.
-2. Implementar 1 nova funcionalidade com impacto controlado.
-3. Evitar quebrar fluxos existentes de cadastro, empréstimo, devolução e relatório.
+### Bug 1: Crash na listagem com banco vazio (`BookManager.listBooksSimple`)
+* **Descrição:** Acesso direto ao índice `0` de uma lista vazia causava `IndexOutOfBoundsException`, quebrando o sistema inteiro.
+* **Como reproduzir ANTES:** Iniciar o sistema sem gerar dados de teste (Seed) e acessar a opção "5 - List books" no menu. O sistema fechava com erro fatal.
+* **Como reproduzir DEPOIS:** Acessar a mesma opção. O sistema exibe amigavelmente a mensagem *"Nenhum livro cadastrado na biblioteca"* e retorna ao menu.
 
-## Pontos de Partida para Correção de Bugs
+### Bug 2: Contagem de empréstimos inconsistente (`Library.countOpenLoansByBook`)
+* **Descrição:** O método legado (antigo `LegacyDatabase`) deveria filtrar a contagem pelo ID do livro, mas a chave de comparação verificava o `userId` em relação ao `bookId`.
+* **Como reproduzir ANTES:** Emprestar o livro ID 1 para o usuário ID 5. Solicitar o relatório de empréstimos do livro ID 1. O sistema retornava "0" cópias emprestadas.
+* **Como reproduzir DEPOIS:** A mesma operação agora retorna a contagem correta (1), pois o filtro compara `loan.getBookId() == bookId`.
 
-Sugestões de investigação com base no código atual:
+### Bug 3: Falsa devolução de empréstimo inexistente (`LoanManager.returnBook`)
+* **Descrição:** O método legado tentava fechar empréstimos que não existiam ou já estavam fechados, operando de forma silenciosa ou gerando `NullPointerException`.
+* **Como reproduzir ANTES:** Digitar um `Loan ID` que não existe (ex: 999) na opção de devolução. O sistema aceitava a operação como concluída.
+* **Como reproduzir DEPOIS:** A mesma operação agora é bloqueada pela validação, lançando no terminal a mensagem: *"Erro: O empréstimo com ID 999 não existe no sistema"*.
 
-- [LoanManager.returnBook](src/LoanManager.java#L90): tratar consistentemente cenários de empréstimo inexistente.
-- [LoanManager.borrowBook](src/LoanManager.java#L14): revisar criação de empréstimos duplicados por canal.
-- [ReportGenerator.generateSimpleReport](src/ReportGenerator.java#L9): revisar totalizadores do relatório.
-- [BookManager.listBooksSimple](src/BookManager.java#L51): validar comportamento com lista vazia.
-- [LegacyDatabase.countOpenLoansByBook](src/LegacyDatabase.java#L181): conferir consistência entre nome e filtro aplicado.
+---
 
-## Implementação Evolutiva (Escolher 1)
+## 2. Manutenção Evolutiva (Nova Funcionalidade)
 
-Exemplos de evolução:
+### Histórico de Empréstimos por Usuário
+* **O que foi implementado:** Adicionada a opção "10 - User History" no menu principal (`LibrarySystem`). Ela solicita o ID de um usuário e lista todos os livros (ativos e devolvidos) associados a ele, exibindo o título do livro e o status do empréstimo.
+* **Como testar:** 1. No menu principal, selecione a opção `10`.
+    2. Insira o ID de um usuário (Ex: Usuário ID 1, carregado no Seed inicial).
+    3. O terminal exibirá o histórico de movimentações daquele usuário.
 
-1. Sistema de reserva de livros.
-2. Histórico de empréstimos por usuário.
-3. Suporte a múltiplos autores.
-4. Melhorias nos relatórios (filtros adicionais, totais por categoria, etc.).
+---
 
-## Regras Técnicas
-
-- Manter Java puro, sem frameworks externos.
-- Preservar estrutura geral do projeto.
-- Priorizar mudanças pequenas e testáveis.
-- Atualizar documentação de uso e impacto da mudança.
-
-## Checklist de Validação
-
-Antes de entregar, validar pelo menos:
-
-1. Compilação com `javac src/*.java`.
-2. Execução de `java -cp src Main --list`.
-3. Execução de `java -cp src Main --report`.
-4. Teste manual do bug corrigido (com passos reproduzíveis).
-5. Teste manual da nova funcionalidade.
-
-## Formato de Entrega - Atividade 2
-
-Data final de entrega: 16/04.
-
-1. Branch/PR com:
-   - correção de no mínimo 3 bugs
-   - implementação de 1 funcionalidade nova
-2. Documento de entrega (README da branch ou markdown) contendo:
-   - quais bugs foram corrigidos
-   - como reproduzir antes e depois
-   - qual funcionalidade foi implementada
-   - impactos e riscos conhecidos
-3. Evidências de execução (saída de terminal ou roteiro) para:
-   - compilação
-   - fluxo principal
-   - nova funcionalidade
-4. Histórico de commits organizado por tipo de manutenção (corretiva/evolutiva).
-
-## Regras de Submissão
-
-### Repositório da Entrega
-
-1. A entrega deve ser feita em um repositório público no GitHub.
-2. O repositório deve ser um fork do repositório da disciplina.
-
-### Envio por E-mail
-
-Após publicar o repositório no GitHub, enviar o link por e-mail para:
-
-joao.vsantos@unicesumar.edu.br
-
-O e-mail deve seguir este formato:
-
-Título do e-mail:
-
-Atividade 2 Manutenção ESOFT5S
-
-Substitua o número conforme o trabalho (Atividade 1 ou Atividade 2).
-
-Corpo do e-mail:
-
-1. Nome completo de cada integrante da equipe.
-2. Usuário do GitHub de cada integrante.
-3. Link do repositório no GitHub.
-
-Exemplo:
-
-Integrantes:
-
-João Silva - github.com/joaosilva  
-Maria Souza - github.com/mariasouza  
-Pedro Lima - github.com/pedrolima
-
-Repositório: https://github.com/grupo-exemplo/trabalho-mobile
-
-### Cópia do E-mail (CC)
-
-O e-mail deve incluir em cópia (CC) o endereço de e-mail de todos os integrantes da equipe.
-
-### Trabalho em Grupo
-
-Os trabalhos podem ser realizados em grupos de até 6 participantes.
-
-### Participação Individual
-
-Cada integrante do grupo deve possuir pelo menos um commit relevante relacionado ao desenvolvimento da atividade no repositório.
-
-### Vídeo da Entrega
-
-Deve ser gravado um vídeo da equipe para esta atividade.
-
-1. Cada integrante deve explicar pelo menos uma manutenção realizada na atividade.
-2. A explicação deve descrever o que foi feito e porque.
-3. O vídeo deve mostrar o código correspondente à manutenção explicada.
-4. O vídeo deve incluir a execução do código para demonstrar o funcionamento.
-
-## Observação
-
-O objetivo não é reescrever o sistema do zero, e sim simular manutenção real com evolução incremental.
+## 3. Impactos e Riscos Conhecidos
+* **Riscos de Transição Arquitetural:** Devido à substituição do `LegacyDatabase` pela classe `Library` e objetos de domínio fortemente tipados, a área de *Debug (Opção 9)* teve que ser adaptada. Atualizações de campos "inseguras" via String (antigo `unsafeUpdateBookField`) agora foram limitadas a *setters* controlados para evitar a corrupção do modelo de domínio.
+* **Evidências de Execução:** A compilação é garantida via `javac src/**/*.java` e as flags solicitadas (`--list` e `--report`) foram implementadas e mapeadas no `Main.java` sem conflitos com o menu interativo.
