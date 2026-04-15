@@ -2,6 +2,11 @@
 
 Este repositório simula um sistema Java legado que evoluiu ao longo do tempo com múltiplas mudanças incrementais, correções rápidas e decisões arquiteturais de curto prazo. O resultado é um código funcional, porém com alta complexidade de manutenção, ideal para práticas reais de manutenção de software.
 
+## Link da Entrega em Video
+```bash
+https://drive.google.com/file/d/1x5vKQeqs-5AQ8LjLZmHqft5NYpYf_G6m/view?usp=sharing
+```
+
 ## Contexto do Sistema
 
 Com base na implementação atual, o sistema oferece:
@@ -19,7 +24,7 @@ O projeto contém intencionalmente problemas de manutenibilidade e bugs sutis pa
 
 As atividades foram separadas em documentos próprios para deixar objetivos, escopo e formato de entrega mais claros:
 
-1. [ATIVIDADE_1.md](ATIVIDADE_1.md) - Análise de Código e Manutenção Preventiva
+1. [ATIVIDADE_1.md](src/AtividadesRespostas/Atividade1.md) - Análise de Código e Manutenção Preventiva
 2. [ATIVIDADE_2.md](src/AtividadesRespostas/ATIVIDADE_2.md) - Manutenção Corretiva e Evolutiva
 
 Data final de entrega: 16/04.
