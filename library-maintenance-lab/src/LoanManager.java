@@ -2,8 +2,12 @@ import Model.Book;
 import Model.Loan;
 import Model.User;
 import Repository.Library;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LoanManager {
+
+    private static final Logger logger = LogManager.getLogger(LoanManager.class);
 
     // Injeção de Dependência: O Manager precisa conhecer o repositório central
     private Library library;
@@ -29,7 +33,8 @@ public class LoanManager {
         try {
             book.borrowCopy(); // O próprio livro tenta diminuir o estoque. Se não der, ele lança erro.
         } catch (IllegalStateException e) {
-            throw new IllegalStateException("Não foi possível emprestar: " + e.getMessage());
+            logger.error("Falha ao processar empréstimo para userId={} e bookId={}", userId, bookId, e);
+            throw new IllegalStateException("Não foi possível emprestar: " + e.getMessage(), e);
         }
 
         // 3. Registra o empréstimo na Library
@@ -39,6 +44,7 @@ public class LoanManager {
 
         int loanId = library.addLoan(book.getId(), user.getId(), borrowDate, dueDate);
         library.addLog("loan-created-success-" + loanId);
+        logger.info("Empréstimo {} criado com sucesso para userId={} e bookId={}", loanId, userId, bookId);
 
         System.out.println("Empréstimo " + loanId + " realizado com sucesso para o usuário " + user.getName() + ".");
     }
@@ -70,7 +76,7 @@ public class LoanManager {
 
         loan.closeLoan(returnDate, fine, "Devolvido pelo LoanManager");
         library.addLog("loan-closed-success-" + loanId);
-
         System.out.println("Devolução processada com sucesso!");
     }
 }
+
