@@ -1,6 +1,11 @@
 package Model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class User {
+
+    private static final Logger logger = LogManager.getLogger(User.class);
 
     private String name;
     private String email;
@@ -13,12 +18,17 @@ public class User {
     int id;
 
     public User(int id, String name, String email, String phone, String userType, String city, String document, String status) {
-        // 1. Validações críticas
-        if (name == null || email == null) {
-            throw new RuntimeException("name, email or phone invalid");
-        }
-        // 2. Atribuições com lógica de "fallback"
-        this.name = name;
+        try {
+            // 1. Validações críticas (Princípio Fail-Fast)
+            if (name == null || name.trim().isEmpty()) {
+                throw new IllegalArgumentException("Name is required and must not be blank.");
+            }
+            if (email == null || email.trim().isEmpty()) {
+                throw new IllegalArgumentException("Email is required and must not be blank.");
+            }
+
+            // 2. Atribuições com lógica de "fallback"
+            this.name = name;
         this.email = email;
         this.phone = (phone == null) ? "00 0000-0000" : phone;
         this.userType = (userType == null) ? "Student" : userType;
@@ -27,6 +37,11 @@ public class User {
         this.status = (status == null) ? "active" : status;
         this.debt = 0.0;
         this.id = id;
+        logger.info("User criado com sucesso: id={} name={}", this.id, this.name);
+        } catch (IllegalArgumentException exception) {
+            logger.error("Falha ao criar User id={} name={}", id, name, exception);
+            throw exception;
+        }
     }
 
     public void addDebt(double amount) {
