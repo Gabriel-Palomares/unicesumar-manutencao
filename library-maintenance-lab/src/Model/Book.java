@@ -1,7 +1,11 @@
 package Model;
 import Util.DataUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Book {
+
+    private static final Logger logger = LogManager.getLogger(Book.class);
 
     private String title;
     private String author;
@@ -14,32 +18,46 @@ public class Book {
     int id;
 
     public Book(int id, String title, String author, int year, String category, int totalCopies, int availableCopies, String shelfCode, String isbn) {
-        // 1. Validações críticas
-        if (title == null || author == null) {
-            throw new RuntimeException("Title or Author invalid");
+        try {
+            // 1. Validações críticas (Princípio Fail-Fast)
+            if (title == null || title.trim().isEmpty()) {
+                throw new IllegalArgumentException("Title is required and must not be blank.");
+            }
+            if (author == null || author.trim().isEmpty()) {
+                throw new IllegalArgumentException("Author is required and must not be blank.");
+            }
+            if (totalCopies <= 0) {
+                throw new IllegalArgumentException("Total copies must be greater than zero.");
+            }
+            if (availableCopies < 0) {
+                throw new IllegalArgumentException("Available copies must not be negative.");
+            }
+            if (availableCopies > totalCopies) {
+                throw new IllegalArgumentException("Available copies cannot exceed total copies.");
+            }
+
+            // 2. Atribuições com lógica de "fallback"
+            this.title = title;
+            this.author = author;
+            this.year = (year < 0) ? 1900 : year;
+            this.category = (category == null) ? "GENERAL" : category;
+            this.totalCopies = totalCopies;
+            this.availableCopies = availableCopies;
+            this.shelfCode = DataUtil.isBlank(shelfCode) ? "X0" : shelfCode;
+            this.isbn = DataUtil.isBlank(isbn) ? "NO-ISBN" : isbn;
+            this.id = id;
+            logger.info("Book criado com sucesso: id={} isbn={}", this.id, this.isbn);
+        } catch (IllegalArgumentException exception) {
+            logger.error("Falha ao criar Book id={} isbn={}", id, isbn, exception);
+            throw exception;
         }
-
-        // 2. Atribuições com lógica de "fallback"
-        this.title = title;
-        this.author = author;
-        this.year = (year < 0) ? 1900 : year;
-        this.category = (category == null) ? "GENERAL" : category;
-        this.totalCopies = (totalCopies <= 0) ? 1 : totalCopies;
-
-        // Garante que cópias disponíveis não sejam negativas nem maiores que o total
-        this.availableCopies = (availableCopies < 0) ? this.totalCopies : availableCopies;
-        this.shelfCode = DataUtil.isBlank(shelfCode) ? "X0" : shelfCode;
-        this.isbn = DataUtil.isBlank(isbn) ? "NO-ISBN" : isbn;
-        this.id = id;
-
     }
 
-    public boolean borrowCopy() {
-        if (this.availableCopies > 0) {
-            this.availableCopies--;
-            return true;
+    public void borrowCopy() {
+        if (this.availableCopies <= 0) {
+            throw new IllegalStateException("Não há cópias disponíveis para empréstimo.");
         }
-        return false; // Não tem cópia
+        this.availableCopies--;
     }
 
     public void returnCopy() {
