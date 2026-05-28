@@ -21,10 +21,12 @@ public class Library {
     private int loanSeq = 1;
 
     // 3. Configurações Globais (Movidas do LegacyDatabase)
-    public String systemMode = "LEGACY";
-    public int globalFinePerDay = 2;
-    public int globalMaxLoanDays = 14;
-    public boolean workaroundFlag = true;
+    private String systemMode = "LEGACY";
+    private int globalFinePerDay = 2;
+    private int globalMaxLoanDays = 14;
+    private boolean workaroundFlag = true;
+
+    private static final String CATEGORY_SOFTWARE = "Software";
 
     // --- MÉTODOS DE ADIÇÃO (Fábricas) ---
 
@@ -126,14 +128,46 @@ public class Library {
         System.out.println("BOOKS=" + books.size() + "; USERS=" + users.size() + "; LOANS=" + loans.size());
     }
 
+    public String getSystemMode() {
+        return systemMode;
+    }
+
+    public void setSystemMode(String systemMode) {
+        this.systemMode = systemMode;
+    }
+
+    public int getGlobalFinePerDay() {
+        return globalFinePerDay;
+    }
+
+    public void setGlobalFinePerDay(int globalFinePerDay) {
+        this.globalFinePerDay = globalFinePerDay;
+    }
+
+    public int getGlobalMaxLoanDays() {
+        return globalMaxLoanDays;
+    }
+
+    public void setGlobalMaxLoanDays(int globalMaxLoanDays) {
+        this.globalMaxLoanDays = globalMaxLoanDays;
+    }
+
+    public boolean isWorkaroundFlag() {
+        return workaroundFlag;
+    }
+
+    public void setWorkaroundFlag(boolean workaroundFlag) {
+        this.workaroundFlag = workaroundFlag;
+    }
+
     public void seedInitialData() {
         if (!books.isEmpty() || !users.isEmpty()) {
             return;
         }
         // Repare que agora usamos o próprio método interno da Repository.Library
-        addBook("Clean Code", "Robert C. Martin", 2008, "Software", 3, 3, "A1", "ISBN-111");
-        addBook("Design Patterns", "GoF", 1994, "Software", 2, 2, "A2", "ISBN-222");
-        addBook("Refactoring", "Martin Fowler", 1999, "Software", 4, 4, "A3", "ISBN-333");
+        addBook("Clean Code", "Robert C. Martin", 2008, CATEGORY_SOFTWARE, 3, 3, "A1", "ISBN-111");
+        addBook("Design Patterns", "GoF", 1994, CATEGORY_SOFTWARE, 2, 2, "A2", "ISBN-222");
+        addBook("Refactoring", "Martin Fowler", 1999, CATEGORY_SOFTWARE, 4, 4, "A3", "ISBN-333");
 
         addUser("Ana", "ana@mail.com", "1111-1111", "student", "Maringa", "DOC-1", "ACTIVE");
         addUser("Bruno", "bruno@mail.com", "2222-2222", "teacher", "Maringa", "DOC-2", "ACTIVE");
@@ -141,3 +175,5 @@ public class Library {
         addLog("seed-loaded");
     }
 }
+
+@280839489368234
