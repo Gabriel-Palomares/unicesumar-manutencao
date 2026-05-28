@@ -32,5 +32,3 @@ public class NotificationServiceTest {
         assertTrue(output.contains("2026-06-10"), "A mensagem deve conter a data de devolução.");
     }
 }
-
-@274590362247180
