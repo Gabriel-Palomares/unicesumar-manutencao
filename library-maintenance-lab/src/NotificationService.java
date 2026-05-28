@@ -11,13 +11,13 @@ public class NotificationService {
         this.library = library;
     }
 
-    public void notifyLoanCreated(int userId, int bookId, String date, String dueDate, String channel, String template, String managerName) {
+    public void notifyLoanCreated(int userId, int bookId, String borrowDate, String dueDate, String channel) {
         // Busca os objetos tipados
         User user = library.getUserById(userId);
         Book book = library.getBookById(bookId);
 
         if (user != null && book != null) {
-            String msg = "Model.Loan created for user " + user.getName() + " and book " + book.getTitle() + " due " + dueDate;
+            String msg = "Model.Loan created for user " + user.getName() + " and book " + book.getTitle() + " borrowed " + borrowDate + " due " + dueDate;
 
             if ("sms".equals(channel)) {
                 System.out.println("SMS: " + msg);
@@ -77,3 +77,5 @@ public class NotificationService {
         library.addLog("notify-debt-" + userId + "-" + manager);
     }
 }
+
+@⁨Camilli
