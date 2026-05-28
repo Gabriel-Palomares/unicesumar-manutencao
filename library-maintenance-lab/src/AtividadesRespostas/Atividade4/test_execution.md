@@ -23,7 +23,6 @@ Se o comando `mvn` nao estiver instalado, execute o teste diretamente pelo Intel
 
 ## Registro de resultado
 
-- Resultado: __________________________________________
-- Data: _____________________________________________
+- Resultado: Aprovado
+- Data: 27/05
 - Evidencia: `src/AtividadesRespostas/Atividade4/images/junit-notificationservice.png`
-- Observacao: anexe o print do terminal ou da barra verde do JUnit.
