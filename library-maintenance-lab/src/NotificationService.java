@@ -12,6 +12,10 @@ public class NotificationService {
     }
 
     public void notifyLoanCreated(int userId, int bookId, String borrowDate, String dueDate, String channel) {
+        notifyLoanCreated(userId, bookId, borrowDate, dueDate, channel, "", "");
+    }
+
+    public void notifyLoanCreated(int userId, int bookId, String borrowDate, String dueDate, String channel, String template, String source) {
         // Busca os objetos tipados
         User user = library.getUserById(userId);
         Book book = library.getBookById(bookId);
