@@ -77,5 +77,3 @@ public class NotificationService {
         library.addLog("notify-debt-" + userId + "-" + manager);
     }
 }
-
-@⁨Camilli
